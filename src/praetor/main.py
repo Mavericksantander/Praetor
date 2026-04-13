@@ -22,12 +22,16 @@ logger = EventLogger(settings.log_dir)
 
 
 class LogRequest(BaseModel):
-    """Solicitud para registrar un evento."""
+    """Solicitud mínima para registrar un evento."""
+
     action: str = Field(..., description="Tipo de acción (ej: chat/query)")
-    classification: str = Field(..., description="PUBLICA, RESERVADO, SECRETO")
     agent_id: str = Field(..., description="Identificación del usuario/agente")
     prompt: str = Field(..., description="Mensaje enviado al LLM")
     response: str = Field(..., description="Respuesta del LLM")
+    classification: Optional[str] = Field(
+        default=None,
+        description="Etiqueta opcional de clasificación (texto libre)",
+    )
     metadata: Optional[dict[str, Any]] = Field(default_factory=dict)
 
 
@@ -53,15 +57,9 @@ def health():
 def log_event(payload: LogRequest) -> LogResponse:
     """
     Registra un evento con hash encadenado e integridad criptográfica.
-    
+
     Cada evento se almacena en un archivo de log diario con SHA-256 encadenado.
     """
-    
-    # Validar clasificación
-    if payload.classification not in settings.valid_classifications:
-        raise ValueError(
-            f"Clasificación inválida. Válidas: {', '.join(settings.valid_classifications)}"
-        )
     
     # Generar ID único
     event_id = str(uuid.uuid4())

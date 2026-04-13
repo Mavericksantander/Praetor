@@ -1,30 +1,35 @@
 # Praetor Gateway
 
-**Auditoría inmutable con integridad criptográfica para LLM del Ejército de Chile.**
+**Auditoría inmutable con integridad criptográfica para cualquier LLM, instalable en un comando.**
 
 ## Propósito
 
 Praetor registra cada consulta a un LLM con hash SHA-256 encadenado, garantizando integridad y trazabilidad sin interferir con operaciones.
 
-## Requisitos
+## Instalación (1 comando)
 
-- Python 3.11+
-- pip
+Con Docker (recomendado):
+```bash
+docker run -d --name praetor \
+  -e PRAETOR_LOG_DIR=/var/praetor/logs \
+  -v /var/praetor/logs:/var/praetor/logs \
+  -p 127.0.0.1:8000:8000 \
+  mavericksantander/praetor:latest
+```
 
-## Instalación
+Sin Docker (systemd, requiere sudo):
+```bash
+curl -sSL https://raw.githubusercontent.com/Mavericksantander/Praetor/main/scripts/install.sh | bash
+```
+
+## Uso
+
+### Iniciar Praetor (manual, sin instalador)
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.offline.txt
-```
-
-## Uso
-
-### Iniciar Praetor
-
-```bash
-export PRAETOR_LOG_DIR=data/logs
 uvicorn src.praetor.main:app --host 127.0.0.1 --port 8000
 ```
 

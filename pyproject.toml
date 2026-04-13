@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "praetor-gateway"
+version = "0.1.0"
+description = "Gateway de gobernanza y auditoría air-gapped para Canopy en despliegues soberanos"
+authors = [ { name = "Praetor Team", email = "security@ejercito.cl" } ]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.110,<1",
+  "uvicorn[standard]>=0.27,<0.29",
+  "pydantic>=2.6,<3",
+  "pydantic-settings>=2.2,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "httpx>=0.27"]
+
+[tool.hatch.build]
+include = ["src/praetor_gateway", "policy_packs", "scripts", "charts", "docs"]
+
+[tool.hatch.metadata]
+allow-direct-references = false
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "W"]
